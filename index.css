@@ -97,3 +97,9 @@ button:hover {
   font-family: monospace;
   margin: 3px;
 }
+.toy {
+  width: 33%;
+}
+img {
+  width: 80%;
+}
