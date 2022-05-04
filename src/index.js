@@ -51,7 +51,7 @@ function renderToy(toy) {
   // Styles
   image.classList.add("toy-avatar");
   toyContainer.classList.add("card");
-  button.classList.add("like");
+  button.classList.add("like-btn");
   // Add event listener for likes
   button.addEventListener("click", (e) => likeToy(e));
   // Adding to page
