@@ -1,12 +1,3 @@
-let addToy = false;
-const toysContainer = document.querySelector("#toy-collection");
-class Toy {
-  constructor(name, image) {
-    this.name = name;
-    this.image = image;
-    this.likes = 0;
-  }
-}
 document.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.querySelector("#new-toy-btn");
   const toyFormContainer = document.querySelector(".container");
@@ -26,13 +17,26 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => displayData(data))
 });
+
+let addToy = false;
+const toysContainer = document.querySelector("#toy-collection");
+
+class Toy {
+  constructor(name, image) {
+    this.name = name;
+    this.image = image;
+    this.likes = 0;
+  }
+}
+
+
 function displayData(data) {
   for (let toy of data) {
-    createToy(toy);
+    renderToy(toy);
   }
-
 }
-function createToy(toy) {
+
+function renderToy(toy) {
   // Declaration
   let h2 = document.createElement("h2");
   let likes = document.createElement("p");
@@ -49,22 +53,7 @@ function createToy(toy) {
   toyContainer.classList.add("card");
   button.classList.add("like");
   // Add event listener for likes
-  button.addEventListener("click", function (e) {
-    let id = Number(button.parentNode.id);
-    let newLike = Number(button.previousSibling.innerText);
-    newLike++;
-    fetch(`http://localhost:3000/toys/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "likes": newLike,
-      })
-    })
-      .then(res => res.json())
-      .then(data => likes.innerText = data.likes)
-  })
+  button.addEventListener("click", (e) => likeToy(e));
   // Adding to page
   toyContainer.appendChild(h2);
   toyContainer.appendChild(image);
@@ -73,6 +62,25 @@ function createToy(toy) {
   toyContainer.id = toy.id
   toysContainer.appendChild(toyContainer);
 }
+
+function likeToy(e) {
+  let button = e.target;
+  let id = Number(button.parentNode.id);
+  let newLike = Number(button.previousSibling.innerText);
+  newLike++;
+  fetch(`http://localhost:3000/toys/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "likes": newLike,
+    })
+  })
+    .then(res => res.json())
+    .then(data => button.previousSibling.innerText = data.likes)
+}
+
 function newToy(event) {
   event.preventDefault();
   let toyName = event.target[0].value;
@@ -87,6 +95,6 @@ function newToy(event) {
     body: JSON.stringify(toy),
   })
     .then(res => res.json())
-    .then(data => createToy(data))
+    .then(data => renderToy(data))
 
 }
